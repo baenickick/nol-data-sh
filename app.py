@@ -16,8 +16,13 @@ st.write("CSV 파일을 올리면, 각 장소 후기를 AI가 자동으로 분�
 uploaded_file = st.file_uploader("CSV 파일 업로드", type=["csv"])
 
 if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-    st.write("원본 데이터 미리보기:")
+    # 인코딩 자동 감지 코드
+    try:
+        df = pd.read_csv(uploaded_file, encoding="utf-8")
+    except UnicodeDecodeError:
+        uploaded_file.seek(0)  # 파일 포인터 처음으로
+        df = pd.read_csv(uploaded_file, encoding="cp949")  # 한글 엑셀 전용
+
     st.dataframe(df)
 
     # 결과 저장 컬럼
